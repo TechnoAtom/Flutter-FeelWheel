@@ -1,3 +1,4 @@
+import 'package:duygucarki/Views/Admin.dart';
 import 'package:duygucarki/Views/Emotions.dart';
 import 'package:duygucarki/Views/LoginScreen.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +99,20 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
                     fit: BoxFit.contain,
                   ),
                 ),
+                if(widget.id == 1) ...[
+                  ListTile(
+                    leading: const Icon(Icons.manage_accounts),
+                    title: const Text(
+                      'Admin',
+                      style:
+                      TextStyle(fontFamily: 'Barlow Condensed', fontSize: 21),
+                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Admin()));
+                    },
+                  ),
+                ],
                 ListTile(
                   leading: const Icon(Icons.home),
                   title: const Text(

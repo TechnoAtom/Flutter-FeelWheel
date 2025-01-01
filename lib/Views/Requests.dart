@@ -102,17 +102,18 @@ class Requests {
 
 
 Future<void> sendSelectedEmotions(int? userId, List<String> selectedEmotions) async {
-  //final url = Uri.parse('https://apronmobil.com/Account/AddUserEmotions');
-  final url = Uri.parse('http://10.0.2.2:5056/Account/adduseremotions');
-
+  final url = Uri.parse('https://apronmobil.com/Account/adduseremotion');
 
   // JSON formatında veri hazırlayın
   final Map<String, dynamic> requestBody = {
-    'userId': userId, // userId'yi artık int olarak gönderiyoruz
-    'selectedEmotions': selectedEmotions.isNotEmpty ? selectedEmotions : [null, null, null], // Listede boş varsa, null değer gönder
+    'userId': userId != null ? userId.toString() : '0',  // userId'yi String olarak gönderiyoruz
+    'selectedEmotions': selectedEmotions.isNotEmpty ? selectedEmotions : [], // Boşsa, boş dizi gönder
   };
 
   try {
+    // İstek yapılmadan önce requestBody'yi yazdıralım
+    print('Request Body: ${json.encode(requestBody)}');
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -123,9 +124,9 @@ Future<void> sendSelectedEmotions(int? userId, List<String> selectedEmotions) as
       print('Veri başarıyla gönderildi.');
     } else {
       print('Hata: ${response.statusCode}');
+      print('Cevap: ${response.body}');  // Sunucudan gelen cevabı yazdır
     }
   } catch (e) {
     print('İstek sırasında hata oluştu: $e');
   }
 }
-

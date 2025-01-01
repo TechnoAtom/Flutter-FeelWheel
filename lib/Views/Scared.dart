@@ -376,6 +376,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                                   addThirdEmotion(scaredmodel.kafasikarisik);
                                   sendSelectedEmotions(
                                       widget.id, selectedemotions);
+                                  print(selectedemotions.toString());
                                   setState(() {});
                                   showCustomDialog(context,oe);
 
