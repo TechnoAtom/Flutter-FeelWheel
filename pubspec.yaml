@@ -1,0 +1,68 @@
+name: duygucarki
+description: "Duygu Çarkı"
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  cupertino_icons: ^1.0.6
+  flutter_sequence_animation: "^4.0.0"
+  url_launcher: ^6.3.1
+  syncfusion_flutter_datepicker: ^27.2.2
+  intl: ^0.18.0  # Eğer intl kullanıyorsanız, versiyon uyumuna dikkat edin
+  localization: ^2.1.1
+  syncfusion_flutter_charts: ^27.2.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  http: ^1.2.2
+
+
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - images/wheel.png
+    - images/angry1.png
+    - images/angry2.png
+    - images/angry3.png
+    - images/calm1.png
+    - images/calm2.png
+    - images/calm3.png
+    - images/happy1.png
+    - images/happy2.png
+    - images/happy3.png
+    - images/sad1.png
+    - images/sad2.png
+    - images/sad3.png
+    - images/scared1.png
+    - images/scared2.png
+    - images/scared3.png
+    - images/logo.png
+    - images/feelwheel.png
+    - images/strong1.png
+    - images/strong2.png
+    - images/strong3.png
+
+  fonts:
+    - family: Barlow Condensed
+      fonts:
+        - asset: assets/fonts/BarlowCondensed-Regular.ttf
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
