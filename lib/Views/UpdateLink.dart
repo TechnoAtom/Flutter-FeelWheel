@@ -12,57 +12,56 @@ class Updatelink extends StatefulWidget {
 class _UpdatelinkState extends State<Updatelink> {
   final TextEditingController _controller = TextEditingController();
 
-  // Backend'e POST isteği gönderecek metot
+  // API'ye link gönderme fonksiyonu
   Future<void> _saveLink() async {
-    String link = _controller.text;
+    String link = _controller.text.trim();
 
-    if (link.isNotEmpty) {
-      // URL'nizi buraya yazın
-      final url = Uri.parse('http://10.0.2.2:5056/Account/updatelink');  // C# API endpoint
+    if (link.isEmpty) {
+      // Boş link uyarısı
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Lütfen geçerli bir link girin.")),
+      );
+      return;
+    }
 
-      // POST isteğini gönder
-      try {
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},  // JSON formatında veri gönderiyoruz
-          body: jsonEncode({'link': link}),  // JSON formatında 'link' verisini gönderiyoruz
+    // API URL'niz
+    final String apiUrl = 'https://apronmobil.com/Account/UpdateLink';
+
+    try {
+      // JSON formatında gönderilecek veri
+      final Map<String, String> requestData = {
+        'LinkUrl': link,
+      };
+
+      // POST isteği yapma
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Başarılı cevap durumunda
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Link başarıyla güncellendi.")),
         );
 
-        if (response.statusCode == 200) {
-          // Başarılı ise cevap göster
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Link Kaydedildi'),
-                content: Text('Girilen link: $link'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Tamam'),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          // Hata durumunda kullanıcıyı bilgilendir
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Bir hata oluştu!')),
-          );
-        }
-      } catch (e) {
-        // Ağ hatası veya başka bir hata durumunda
+        // TextField'ı boşalt
+        setState(() {
+          _controller.clear();
+        });
+      } else {
+        // Başarısız cevap durumunda
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hata oluştu: $e')),
+          SnackBar(content: Text("Güncellenmek üzere bir hata oluştu.")),
         );
       }
-    } else {
-      // Link boş ise kullanıcıyı bilgilendir
+    } catch (e) {
+      // Hata durumunda
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lütfen geçerli bir link girin')),
+        SnackBar(content: Text("Bir hata oluştu: $e")),
       );
     }
   }
