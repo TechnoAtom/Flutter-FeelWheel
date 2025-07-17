@@ -31,21 +31,17 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.sanatterapi.duygucarki"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35  // Güncel SDK sürümüyle uyumlu
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.sanatterapi.duygucarki"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 21
+        targetSdk = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -61,12 +57,15 @@ android {
 
     buildTypes {
         release {
-            //signingConfig = signingConfigs.debug
-            signingConfig = signingConfigs.release
+            signingConfig signingConfigs.release
         }
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"  // Kotlin için Java 11 uyumu
     }
 }
 
 flutter {
-    source = "../.."
+    source = "../.."  // Flutter SDK yolunu belirtir
 }
