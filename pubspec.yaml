@@ -3,7 +3,7 @@ description: "Duygu Çarkı"
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-
+#build numarası artırma
 version: 1.0.0+3
 
 environment:
