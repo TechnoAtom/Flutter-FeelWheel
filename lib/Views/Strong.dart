@@ -21,8 +21,8 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
   bool _imagesLoaded = false;
   List<String> selectedemotions = [];
   bool _showProgressIndicator = false; // Progress indicator başlangıçta false
-  late String oe;
-  late String description;
+  String oe = "";
+  String description = "";
 
   String url = "https://okyanusda.com/";
 
@@ -32,7 +32,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     getLink();
-    getdescription();
+    _ensureDescriptionLoaded();
   }
 
   @override
@@ -42,6 +42,14 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     strongmodel.isVisible1 = false;
     strongmodel.isVisible2 = false;
+  }
+
+  Future<void> _ensureDescriptionLoaded() async {
+    if (description.isEmpty) {
+      final value = await Requests().getDescription();
+      if (!mounted) return;
+      setState(() => description = value);
+    }
   }
 
   void _launchURL(String oe) async {
@@ -121,28 +129,33 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
 
   //Get Link
   Future<String> getLink() async {
-    final url =
-    Uri.parse('https://apronmobil.com/Account/GetLink'); // API endpoint
+    final url = Uri.parse('${Requests.baseUrl}/Account/GetLink');
     setLoading();
-    try {
-      final response = await http.get(url); // HTTP isteği gönderiliyor
 
-      // Durum kodlarına göre kontrol
+    print("➡️ GET isteği atılıyor...");
+    print("URL: $url");
+
+    try {
+      final response = await http.get(url);
+
+      print("⬅️ STATUS CODE: ${response.statusCode}");
+      print("⬅️ RESPONSE BODY: ${response.body}");
+
       if (response.statusCode == 200) {
         oe = response.body;
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return response.body;
-        // API'den gelen veriyi direkt olarak döndürüyoruz
+        setLoading();
+        return oe;
       } else if (response.statusCode == 404) {
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return "Kayıt bulunamadı"; // Hata mesajı dönüyoruz
+        setLoading();
+        return "Kayıt bulunamadı";
       } else {
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return "Beklenmedik hata oluştu"; // Diğer hata durumları
+        setLoading();
+        return "Beklenmedik hata oluştu";
       }
     } catch (e) {
-      setLoading(); // Yükleme başlatıldığını belirtiyoruz
-      return "Hata oluştu: $e"; // Hata durumunda dönecek mesaj
+      print("❌ Hata oluştu: $e");
+      setLoading();
+      return "Hata oluştu: $e";
     }
   }
 
@@ -357,7 +370,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                             _buildEmotionButton(context, strongmodel.onemli, scwidht * 0.10,
                                 scwidht * 0.25, 10.7, scwidht * 0.038, () {
                                   addThirdEmotion(strongmodel.onemli);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
                                   showCustomDialog(context, oe);
@@ -365,7 +378,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                             _buildEmotionButton(context, strongmodel.azimli, scwidht * 0.11,
                                 scwidht * 0.36, 10.60, scwidht * 0.040, () {
                                   addThirdEmotion(strongmodel.azimli);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
                                   showCustomDialog(context, oe);
@@ -378,7 +391,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 10.85,
                                 scwidht * 0.040, () {
                               addThirdEmotion(strongmodel.guclenmisgibi);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -391,7 +404,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 11.05,
                                 scwidht * 0.040, () {
                               addThirdEmotion(strongmodel.basarili);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -399,7 +412,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                             _buildEmotionButton(context, strongmodel.zeki, scwidht * 0.56,
                                 scwidht * 0.33, 11.3, scwidht * 0.040, () {
                                   addThirdEmotion(strongmodel.zeki);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
                                   showCustomDialog(context, oe);
@@ -412,7 +425,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 11.40,
                                 scwidht * 0.040, () {
                               addThirdEmotion(strongmodel.kendindenemin);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -511,50 +524,17 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
   }
 
   // Dialog fonksiyonunu burada tanımlıyoruz
-  void showCustomDialog(BuildContext context, String oe) {
+  void showCustomDialog(BuildContext context, String url) {
+    final emo = selectedemotions.length >= 3 ? selectedemotions[2] : "";
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dialog'u kapat
-                },
-                child: const Text(
-                  'Vazgeç',
-                  style: TextStyle(
-                    fontFamily: 'Barlow Condensed',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w200,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  _launchURL(oe);
-                  print('Ziyaret Et tıklandı');
-                },
-                child: const Text(
-                  'Ziyaret Et',
-                  style: TextStyle(
-                    fontFamily: 'Barlow Condensed',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w200,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
         title: const Text('Uyarı'),
         contentPadding: const EdgeInsets.all(20),
         content: Text(
-          '${ selectedemotions[2].toString()}$description "${url}"',
+          (description.isNotEmpty)
+              ? description
+              : 'Yükleniyor...',
           style: const TextStyle(
             fontFamily: 'Barlow Condensed',
             fontStyle: FontStyle.normal,
@@ -562,6 +542,25 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
             fontSize: 18,
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              "Vazgeç",
+              style: TextStyle(
+                fontFamily: 'Barlow Condensed',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w200,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          // İstersen link açma butonunu geri aç:
+          // TextButton(
+          //   onPressed: () => _launchURL(url),
+          //   child: const Text('Ziyaret Et'),
+          // ),
+        ],
       ),
     );
   }

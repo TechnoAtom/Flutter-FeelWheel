@@ -22,16 +22,15 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
   bool _imagesLoaded = false;
   List<String> selectedemotions = [];
   bool _showProgressIndicator = false; // Progress indicator başlangıçta false
-  late String oe;
-  late String description;
-
+  String oe = "";
+  String description = "";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     getLink();
-    getdescription();
+    _ensureDescriptionLoaded();
   }
 
   @override
@@ -41,6 +40,14 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     happymodel.isVisible1 = false;
     happymodel.isVisible2 = false;
+  }
+
+  Future<void> _ensureDescriptionLoaded() async {
+    if (description.isEmpty) {
+      final value = await Requests().getDescription();
+      if (!mounted) return;
+      setState(() => description = value);
+    }
   }
 
   void _launchURL(String oe) async {
@@ -117,32 +124,38 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
   }
 
   //Get Link
+  // Link'i çeker
   Future<String> getLink() async {
-    final url =
-    Uri.parse('https://apronmobil.com/Account/GetLink'); // API endpoint
+    final url = Uri.parse('${Requests.baseUrl}/Account/GetLink');
     setLoading();
-    try {
-      final response = await http.get(url); // HTTP isteği gönderiliyor
 
-      // Durum kodlarına göre kontrol
+    print("➡️ GET isteği atılıyor...");
+    print("URL: $url");
+
+    try {
+      final response = await http.get(url);
+
+      print("⬅️ STATUS CODE: ${response.statusCode}");
+      print("⬅️ RESPONSE BODY: ${response.body}");
+
       if (response.statusCode == 200) {
         oe = response.body;
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return response.body;
-        // API'den gelen veriyi direkt olarak döndürüyoruz
+        setLoading();
+        return oe;
       } else if (response.statusCode == 404) {
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return "Kayıt bulunamadı"; // Hata mesajı dönüyoruz
+        setLoading();
+        return "Kayıt bulunamadı";
       } else {
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return "Beklenmedik hata oluştu"; // Diğer hata durumları
+        setLoading();
+        return "Beklenmedik hata oluştu";
       }
     } catch (e) {
-      setLoading(); // Yükleme başlatıldığını belirtiyoruz
-      return "Hata oluştu: $e"; // Hata durumunda dönecek mesaj
+      print("❌ Hata oluştu: $e");
+      setLoading();
+      return "Hata oluştu: $e";
     }
-
   }
+
   Future<String> getdescription() async {
     final url = Uri.parse('https://apronmobil.com/Account/GetDescription'); // API endpoint
     setLoading();  // Yükleme durumunu başlat
@@ -364,7 +377,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 10.56,
                                 scwidht * 0.038, () {
                               addThirdEmotion(happymodel.memnun);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -378,7 +391,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 10.70,
                                 scwidht * 0.040, () {
                               addThirdEmotion(happymodel.cokeglenmis);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -391,7 +404,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 10.90,
                                 scwidht * 0.040, () {
                               addThirdEmotion(happymodel.hevesli);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -404,7 +417,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 11.05,
                                 scwidht * 0.040, () {
                               addThirdEmotion(happymodel.hosnutolmus);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -417,7 +430,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 11.25,
                                 scwidht * 0.040, () {
                               addThirdEmotion(happymodel.heyecanli);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -430,7 +443,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 11.40,
                                 scwidht * 0.040, () {
                               addThirdEmotion(happymodel.tutkulu);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context, oe);
@@ -529,50 +542,17 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
   }
 
   // Dialog fonksiyonunu burada tanımlıyoruz
-  void showCustomDialog(BuildContext context, String oe) {
+  void showCustomDialog(BuildContext context, String url) {
+    final emo = selectedemotions.length >= 3 ? selectedemotions[2] : "";
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dialog'u kapat
-                },
-                child: const Text(
-                  'Vazgeç',
-                  style: TextStyle(
-                    fontFamily: 'Barlow Condensed',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w200,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  _launchURL(oe);
-                  print('Ziyaret Et tıklandı');
-                },
-                child: const Text(
-                  'Ziyaret Et',
-                  style: TextStyle(
-                    fontFamily: 'Barlow Condensed',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w200,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
         title: const Text('Uyarı'),
         contentPadding: const EdgeInsets.all(20),
         content: Text(
-          '${ selectedemotions[2].toString()}$description "${oe}"',
+          (description.isNotEmpty)
+              ? description
+              : 'Yükleniyor...',
           style: const TextStyle(
             fontFamily: 'Barlow Condensed',
             fontStyle: FontStyle.normal,
@@ -580,6 +560,25 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
             fontSize: 18,
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              "Vazgeç",
+              style: TextStyle(
+                fontFamily: 'Barlow Condensed',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w200,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          // İstersen link açma butonunu geri aç:
+          // TextButton(
+          //   onPressed: () => _launchURL(url),
+          //   child: const Text('Ziyaret Et'),
+          // ),
+        ],
       ),
     );
   }

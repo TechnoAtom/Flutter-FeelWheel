@@ -4,7 +4,7 @@ description: "Duygu Çarkı"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 #build numarası artırma
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -22,6 +22,7 @@ dependencies:
   intl: ^0.18.0  # Eğer intl kullanıyorsanız, versiyon uyumuna dikkat edin
   localization: ^2.1.1
   syncfusion_flutter_charts: ^27.2.2
+  dio: ^5.9.0
 
 
 dev_dependencies:

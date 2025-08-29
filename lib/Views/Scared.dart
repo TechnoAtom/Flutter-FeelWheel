@@ -20,8 +20,8 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
   bool _imagesLoaded = false;
   List<String> selectedemotions = [];
   bool _showProgressIndicator = false; // Progress indicator başlangıçta
-  late String oe;
-  late String description;
+  String oe = "";
+  String description = "";
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     getLink();
-    getdescription();
+    _ensureDescriptionLoaded();
   }
 
   @override
@@ -39,6 +39,14 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     scaredmodel.isVisible1 = false;
     scaredmodel.isVisible2 = false;
+  }
+
+  Future<void> _ensureDescriptionLoaded() async {
+    if (description.isEmpty) {
+      final value = await Requests().getDescription();
+      if (!mounted) return;
+      setState(() => description = value);
+    }
   }
 
   void _launchURL(String oe) async {
@@ -119,29 +127,33 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
 
   //Get Link
   Future<String> getLink() async {
-    final url =
-    Uri.parse('https://apronmobil.com/Account/GetLink');
-    // API endpoint
+    final url = Uri.parse('${Requests.baseUrl}/Account/GetLink');
     setLoading();
-    try {
-      final response = await http.get(url); // HTTP isteği gönderiliyor
 
-      // Durum kodlarına göre kontrol
+    print("➡️ GET isteği atılıyor...");
+    print("URL: $url");
+
+    try {
+      final response = await http.get(url);
+
+      print("⬅️ STATUS CODE: ${response.statusCode}");
+      print("⬅️ RESPONSE BODY: ${response.body}");
+
       if (response.statusCode == 200) {
         oe = response.body;
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return response.body;
-        // API'den gelen veriyi direkt olarak döndürüyoruz
+        setLoading();
+        return oe;
       } else if (response.statusCode == 404) {
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return "Kayıt bulunamadı"; // Hata mesajı dönüyoruz
+        setLoading();
+        return "Kayıt bulunamadı";
       } else {
-        setLoading(); // Yükleme başlatıldığını belirtiyoruz
-        return "Beklenmedik hata oluştu"; // Diğer hata durumları
+        setLoading();
+        return "Beklenmedik hata oluştu";
       }
     } catch (e) {
-      setLoading(); // Yükleme başlatıldığını belirtiyoruz
-      return "Hata oluştu: $e"; // Hata durumunda dönecek mesaj
+      print("❌ Hata oluştu: $e");
+      setLoading();
+      return "Hata oluştu: $e";
     }
   }
 
@@ -323,7 +335,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             _buildEmotionButton(context, scaredmodel.kaygicinde, scwidht * 0,
                                 scwidht * 0.29, 10.56, scwidht * 0.038, () {
                                   addThirdEmotion(scaredmodel.kaygicinde);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
                                   showCustomDialog(context,oe);
@@ -333,7 +345,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             _buildEmotionButton(context, scaredmodel.supheicinde, scwidht * 0.10,
                                 scwidht * 0.225, 10.65, scwidht * 0.040, () {
                                   addThirdEmotion(scaredmodel.supheicinde);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {
                                     showCustomDialog(context,oe);
@@ -342,7 +354,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             _buildEmotionButton(context, scaredmodel.ezilmis, scwidht * 0.30,
                                 scwidht * 0.25, 10.85, scwidht * 0.040, () {
                                   addThirdEmotion(scaredmodel.ezilmis);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
                                   showCustomDialog(context,oe);
@@ -356,7 +368,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                                 11.04,
                                 scwidht * 0.040, () {
                               addThirdEmotion(scaredmodel.heyecandangerilmis);
-                              sendSelectedEmotions(
+                              Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
                               showCustomDialog(context,oe);
@@ -365,7 +377,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             _buildEmotionButton(context, scaredmodel.paranoya, scwidht * 0.565,
                                 scwidht * 0.25, 11.20, scwidht * 0.040, () {
                                   addThirdEmotion(scaredmodel.paranoya);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
                                   showCustomDialog(context,oe);
@@ -374,7 +386,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             _buildEmotionButton(context, scaredmodel.kafasikarisik, scwidht * 0.641,
                                 scwidht * 0.25, 11.40, scwidht * 0.040, () {
                                   addThirdEmotion(scaredmodel.kafasikarisik);
-                                  sendSelectedEmotions(
+                                  Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   print(selectedemotions.toString());
                                   setState(() {});
@@ -475,57 +487,43 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
   }
 
   // Dialog fonksiyonunu burada tanımlıyoruz
-  void showCustomDialog(BuildContext context,String oe) {
+  void showCustomDialog(BuildContext context, String url) {
+    final emo = selectedemotions.length >= 3 ? selectedemotions[2] : "";
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dialog'u kapat
-                },
-                child: const Text(
-                  'Vazgeç',
-                  style: TextStyle(
-                    fontFamily: 'Barlow Condensed',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w200,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  _launchURL(oe);
-                  print('Ziyaret Et tıklandı');
-                },
-                child: const Text(
-                  'Ziyaret Et',
-                  style: TextStyle(
-                    fontFamily: 'Barlow Condensed',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w200,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
         title: const Text('Uyarı'),
         contentPadding: const EdgeInsets.all(20),
-        content:Text(
-          '${ selectedemotions[2].toString()}$description "${oe}"',
-          style: TextStyle(
+        content: Text(
+          (description.isNotEmpty)
+              ? description
+              : 'Yükleniyor...',
+          style: const TextStyle(
             fontFamily: 'Barlow Condensed',
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w200,
             fontSize: 18,
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              "Vazgeç",
+              style: TextStyle(
+                fontFamily: 'Barlow Condensed',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w200,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          // İstersen link açma butonunu geri aç:
+          // TextButton(
+          //   onPressed: () => _launchURL(url),
+          //   child: const Text('Ziyaret Et'),
+          // ),
+        ],
       ),
     );
   }

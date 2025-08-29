@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:duygucarki/Views/Requests.dart'; // ✅ BaseUrl için import et
 
 class Updatedescription extends StatefulWidget {
   const Updatedescription({super.key});
@@ -17,49 +18,50 @@ class _UpdatedescriptionState extends State<Updatedescription> {
     String description = _controller.text.trim();
 
     if (description.isEmpty) {
-      // Boş açıklama uyarısı
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Lütfen geçerli bir açıklama girin.")),
+        const SnackBar(content: Text("Lütfen geçerli bir açıklama girin.")),
       );
       return;
     }
 
-    // API URL'niz (kendi API'nizi buraya koymalısınız)
-    final String apiUrl = 'https://apronmobil.com/Account/UpdateDescription';
+    // ✅ Base URL Requests sınıfından alınıyor
+    final String apiUrl = '${Requests.baseUrl}/Account/UpdateDescription';
 
     try {
-      // JSON formatında gönderilecek veri
       final Map<String, String> requestData = {
-        'description': description,
+        'DescriptionText': description,
       };
 
-      // POST isteği yapma
+      print("➡️ İstek gönderiliyor...");
+      print("URL: $apiUrl");
+      print("Headers: {'Content-Type': 'application/json'}");
+      print("Body: ${jsonEncode(requestData)}");
+
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: json.encode(requestData),
       );
 
+      print("⬅️ STATUS CODE: ${response.statusCode}");
+      print("⬅️ RESPONSE BODY: ${response.body}");
+
       if (response.statusCode == 200) {
-        // Başarılı cevap durumunda
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Açıklama başarıyla güncellendi.")),
+          const SnackBar(content: Text("Açıklama başarıyla güncellendi.")),
         );
 
-        // TextField'ı boşalt
+        if (!mounted) return;
         setState(() {
           _controller.clear();
         });
       } else {
-        // Başarısız cevap durumunda
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Güncellenmek üzere bir hata oluştu.")),
+          SnackBar(content: Text("Hata: ${response.statusCode}")),
         );
       }
     } catch (e) {
-      // Hata durumunda
+      print("❌ Hata oluştu: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Bir hata oluştu: $e")),
       );
@@ -71,7 +73,7 @@ class _UpdatedescriptionState extends State<Updatedescription> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: Text('Açıklama Düzenleme Sayfası'),
+        title: const Text('Açıklama Düzenleme Sayfası'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -85,13 +87,13 @@ class _UpdatedescriptionState extends State<Updatedescription> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveDescription,  // Açıklamayı kaydetme fonksiyonu çağrılıyor
-              child: Text('Kaydet'),
+              onPressed: _saveDescription,
+              child: const Text('Kaydet'),
             ),
           ],
         ),
