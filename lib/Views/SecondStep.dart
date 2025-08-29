@@ -19,7 +19,7 @@ class Secondstep extends StatefulWidget {
     this.sad2 = const [],
     this.happy1 = const [],
     this.happy2 = const [],
-
+//
   });
 
   final String emotion; // Zorunlu değil
