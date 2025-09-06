@@ -60,26 +60,12 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
   }
 
 
-  void addFirstEmotion(String emotion) {
-    selectedemotions.insert(0, emotion);
-  }
-
-  void addSecondEmotion(String emotion) {
-    if (selectedemotions.length > 1) {
-      selectedemotions[1] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          1, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
+  void setEmotion(int index, String emotion) {
+    if (selectedemotions.length <= index) {
+      selectedemotions.addAll(
+          List.filled(index - selectedemotions.length + 1, ''));
     }
-  }
-
-  void addThirdEmotion(String emotion) {
-    if (selectedemotions.length > 2) {
-      selectedemotions[2] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          2, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
-    }
+    selectedemotions[index] = emotion;
   }
 
   void _loadImages() async {
@@ -275,7 +261,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                       _buildEmotionButton(context, sadmodel.uzgun, scwidht * 0.350,
                           scwidht * 0.835, 0, scwidht * 0.06, () {
                             selectedemotions.clear();
-                            addFirstEmotion(sadmodel.uzgun);
+                            setEmotion(0, sadmodel.uzgun);
                             setState(() {
                               sadmodel.toggleIsVisible1();
                               if (sadmodel.isVisible2 == true) {
@@ -286,42 +272,42 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                       //2.PARÇA DUYGULARI
                       _buildEmotionButton(context, sadmodel.incinmis, scwidht * 0.19,
                           scwidht * 0.68, 10.58, scwidht * 0.038, () {
-                            addSecondEmotion(sadmodel.incinmis);
+                            setEmotion(1, sadmodel.incinmis);
                             setState(() {
                               sadmodel.toggleIsVisible2();
                             });
                           }, sadmodel.isVisible1),
                       _buildEmotionButton(context, sadmodel.zayif, scwidht * 0.295,
                           scwidht * 0.69, 10.70, scwidht * 0.038, () {
-                            addSecondEmotion(sadmodel.zayif);
+                            setEmotion(1, sadmodel.zayif);
                             setState(() {
                               sadmodel.toggleIsVisible2();
                             });
                           }, sadmodel.isVisible1),
                       _buildEmotionButton(context, sadmodel.yalniz, scwidht * 0.35,
                           scwidht * 0.67, 10.85, scwidht * 0.038, () {
-                            addSecondEmotion(sadmodel.yalniz);
+                            setEmotion(1, sadmodel.yalniz);
                             setState(() {
                               sadmodel.toggleIsVisible2();
                             });
                           }, sadmodel.isVisible1),
                       _buildEmotionButton(context, sadmodel.bakimsiz, scwidht * 0.395,
                           scwidht * 0.645, 11.05, scwidht * 0.038, () {
-                            addSecondEmotion(sadmodel.bakimsiz);
+                            setEmotion(1, sadmodel.bakimsiz);
                             setState(() {
                               sadmodel.toggleIsVisible2();
                             });
                           }, sadmodel.isVisible1),
                       _buildEmotionButton(context, sadmodel.utanmis, scwidht * 0.47,
                           scwidht * 0.66, 11.20, scwidht * 0.038, () {
-                            addSecondEmotion(sadmodel.utanmis);
+                            setEmotion(1, sadmodel.utanmis);
                             setState(() {
                               sadmodel.toggleIsVisible2();
                             });
                           }, sadmodel.isVisible1),
                       _buildEmotionButton(context, sadmodel.izoleolmus, scwidht * 0.52,
                           scwidht * 0.65, 11.4, scwidht * 0.038, () {
-                            addSecondEmotion(sadmodel.izoleolmus);
+                            setEmotion(1, sadmodel.izoleolmus);
                             setState(() {
                               sadmodel.toggleIsVisible2();
                             });
@@ -329,7 +315,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                       //3. PARÇA DUYGULARI
                       _buildEmotionButton(context, sadmodel.hayal, scwidht * 0,
                           scwidht * 0.26, 10.56, scwidht * 0.038, () {
-                            addThirdEmotion(sadmodel.hayal);
+                            setEmotion(2, sadmodel.hayal);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -344,7 +330,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                           scwidht * 0.24,
                           10.70,
                           scwidht * 0.040, () {
-                        addThirdEmotion(sadmodel.motivasyonsuz);
+                        setEmotion(2, sadmodel.motivasyonsuz);
                         Requests().sendSelectedEmotions(
                             widget.id, selectedemotions);
                         setState(() {});
@@ -353,7 +339,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                       },sadmodel.isVisible2),
                       _buildEmotionButton(context, sadmodel.umutsuz, scwidht * 0.32,
                           scwidht * 0.27, 10.90, scwidht * 0.040, () {
-                            addThirdEmotion(sadmodel.umutsuz);
+                            setEmotion(2, sadmodel.umutsuz);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -367,7 +353,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                           scwidht * 0.20,
                           11.05,
                           scwidht * 0.040, () {
-                        addThirdEmotion(sadmodel.ihaneteugramis);
+                        setEmotion(2, sadmodel.ihaneteugramis);
                         Requests().sendSelectedEmotions(
                             widget.id, selectedemotions);
                         setState(() {});
@@ -376,7 +362,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                       },sadmodel.isVisible2),
                       _buildEmotionButton(context, sadmodel.umitduymayan, scwidht * 0.51,
                           scwidht * 0.23, 11.3, scwidht * 0.040, () {
-                            addThirdEmotion(sadmodel.umitduymayan);
+                            setEmotion(2, sadmodel.umitduymayan);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -385,7 +371,7 @@ class _SadState extends State<Sad> with WidgetsBindingObserver {
                           },sadmodel.isVisible2),
                       _buildEmotionButton(context, sadmodel.reddedilmis, scwidht * 0.65,
                           scwidht * 0.30, 11.40, scwidht * 0.040, () {
-                            addThirdEmotion(sadmodel.reddedilmis);
+                            setEmotion(2, sadmodel.reddedilmis);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});

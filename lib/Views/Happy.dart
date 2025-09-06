@@ -61,26 +61,12 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
     }
   }
 
-  void addFirstEmotion(String emotion) {
-    selectedemotions.insert(0, emotion);
-  }
-
-  void addSecondEmotion(String emotion) {
-    if (selectedemotions.length > 1) {
-      selectedemotions[1] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          1, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
+  void setEmotion(int index, String emotion) {
+    if (selectedemotions.length <= index) {
+      selectedemotions.addAll(
+          List.filled(index - selectedemotions.length + 1, ''));
     }
-  }
-
-  void addThirdEmotion(String emotion) {
-    if (selectedemotions.length > 2) {
-      selectedemotions[2] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          2, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
-    }
+    selectedemotions[index] = emotion;
   }
 
   void _loadImages() async {
@@ -287,7 +273,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 0,
                                 scwidht * 0.06, () {
                               selectedemotions.clear();
-                              addFirstEmotion(happymodel.mutlu);
+                              setEmotion(0, happymodel.mutlu);
                               setState(() {
                                 happymodel.toggleIsVisible1();
                                 if (happymodel.isVisible2 == true) {
@@ -303,7 +289,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.70,
                                 10.58,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(happymodel.neseli);
+                              setEmotion(1, happymodel.neseli);
                               setState(() {
                                 happymodel.toggleIsVisible2();
                               });
@@ -315,7 +301,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.675,
                                 10.70,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(happymodel.keyifli);
+                              setEmotion(1, happymodel.keyifli);
                               setState(() {
                                 happymodel.toggleIsVisible2();
                               });
@@ -327,7 +313,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.62,
                                 10.85,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(happymodel.zevkalmis);
+                              setEmotion(1, happymodel.zevkalmis);
                               setState(() {
                                 happymodel.toggleIsVisible2();
                               });
@@ -339,7 +325,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.638,
                                 11.05,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(happymodel.sevinmis);
+                              setEmotion(1, happymodel.sevinmis);
                               setState(() {
                                 happymodel.toggleIsVisible2();
                               });
@@ -351,7 +337,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.645,
                                 11.20,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(happymodel.eglenmis);
+                              setEmotion(1, happymodel.eglenmis);
                               setState(() {
                                 happymodel.toggleIsVisible2();
                               });
@@ -363,7 +349,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.645,
                                 11.38,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(happymodel.nesesacan);
+                              setEmotion(1, happymodel.nesesacan);
                               setState(() {
                                 happymodel.toggleIsVisible2();
                               });
@@ -376,7 +362,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.32,
                                 10.56,
                                 scwidht * 0.038, () {
-                              addThirdEmotion(happymodel.memnun);
+                              setEmotion(2, happymodel.memnun);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -390,7 +376,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.23,
                                 10.70,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(happymodel.cokeglenmis);
+                              setEmotion(2, happymodel.cokeglenmis);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -403,7 +389,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.26,
                                 10.90,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(happymodel.hevesli);
+                              setEmotion(2, happymodel.hevesli);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -416,7 +402,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.19,
                                 11.05,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(happymodel.hosnutolmus);
+                              setEmotion(2, happymodel.hosnutolmus);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -429,7 +415,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.25,
                                 11.25,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(happymodel.heyecanli);
+                              setEmotion(2, happymodel.heyecanli);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -442,7 +428,7 @@ class _HappyState extends State<Happy> with WidgetsBindingObserver {
                                 scwidht * 0.305,
                                 11.40,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(happymodel.tutkulu);
+                              setEmotion(2, happymodel.tutkulu);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});

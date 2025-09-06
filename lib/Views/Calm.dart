@@ -65,26 +65,12 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
     }
   }
 
-  void addFirstEmotion(String emotion) {
-    selectedemotions.insert(0, emotion);
-  }
-
-  void addSecondEmotion(String emotion) {
-    if (selectedemotions.length > 1) {
-      selectedemotions[1] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          1, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
+  void setEmotion(int index, String emotion) {
+    if (selectedemotions.length <= index) {
+      selectedemotions.addAll(
+          List.filled(index - selectedemotions.length + 1, ''));
     }
-  }
-
-  void addThirdEmotion(String emotion) {
-    if (selectedemotions.length > 2) {
-      selectedemotions[2] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          2, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
-    }
+    selectedemotions[index] = emotion;
   }
 
   void _loadImages() async {
@@ -292,7 +278,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               0,
                               scwidht * 0.06, () {
                             selectedemotions.clear();
-                            addFirstEmotion(calmModel.sakin);
+                            setEmotion(0, calmModel.sakin);
                             setState(() {
                               calmModel.toggleIsVisible1();
 
@@ -312,7 +298,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.66,
                               10.58,
                               scwidht * 0.038, () {
-                            addSecondEmotion(calmModel.rahatlamis);
+                            setEmotion(1, calmModel.rahatlamis);
                             setState(() {
                               calmModel.toggleIsVisible2();
                             });
@@ -324,7 +310,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.63,
                               10.70,
                               scwidht * 0.038, () {
-                            addSecondEmotion(calmModel.yumusamis);
+                            setEmotion(1, calmModel.yumusamis);
                             setState(() {
                               calmModel.toggleIsVisible2();
                             });
@@ -336,7 +322,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.64,
                               10.85,
                               scwidht * 0.038, () {
-                            addSecondEmotion(calmModel.guvende);
+                            setEmotion(1, calmModel.guvende);
                             setState(() {
                               calmModel.toggleIsVisible2();
                             });
@@ -348,7 +334,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.67,
                               11,
                               scwidht * 0.038, () {
-                            addSecondEmotion(calmModel.aktif);
+                            setEmotion(1, calmModel.aktif);
                             setState(() {
                               calmModel.toggleIsVisible2();
                             });
@@ -360,7 +346,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.618,
                               11.25,
                               scwidht * 0.038, () {
-                            addSecondEmotion(calmModel.odaklanmis);
+                            setEmotion(1, calmModel.odaklanmis);
                             setState(() {
                               calmModel.toggleIsVisible2();
                             });
@@ -373,7 +359,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.66,
                               11.42,
                               scwidht * 0.038, () {
-                            addSecondEmotion(calmModel.konforda);
+                            setEmotion(1, calmModel.konforda);
                             setState(() {
                               calmModel.toggleIsVisible2();
                             });
@@ -389,7 +375,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.36,
                               10.55,
                               scwidht * 0.038, () {
-                            addThirdEmotion(calmModel.bariscil);
+                            setEmotion(2, calmModel.bariscil);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -402,7 +388,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.25,
                               10.70,
                               scwidht * 0.040, () {
-                            addThirdEmotion(calmModel.rahatlikicinde);
+                            setEmotion(2, calmModel.rahatlikicinde);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -415,7 +401,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.28,
                               10.85,
                               scwidht * 0.040, () {
-                            addThirdEmotion(calmModel.duygusal);
+                            setEmotion(2, calmModel.duygusal);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -428,7 +414,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.19,
                               11.10,
                               scwidht * 0.040, () {
-                            addThirdEmotion(calmModel.halindenmenun);
+                            setEmotion(2, calmModel.halindenmenun);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -441,7 +427,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.32,
                               11.3,
                               scwidht * 0.040, () {
-                            addThirdEmotion(calmModel.iyimser);
+                            setEmotion(2, calmModel.iyimser);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});
@@ -454,7 +440,7 @@ class _StrongState extends State<Calm> with WidgetsBindingObserver {
                               scwidht * 0.31,
                               11.42,
                               scwidht * 0.040, () {
-                            addThirdEmotion(calmModel.kabullenmis);
+                            setEmotion(2, calmModel.kabullenmis);
                             Requests().sendSelectedEmotions(
                                 widget.id, selectedemotions);
                             setState(() {});

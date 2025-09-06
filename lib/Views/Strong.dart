@@ -63,26 +63,12 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
     }
   }
 
-  void addFirstEmotion(String emotion) {
-    selectedemotions.insert(0, emotion);
-  }
-
-  void addSecondEmotion(String emotion) {
-    if (selectedemotions.length > 1) {
-      selectedemotions[1] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          1, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
+  void setEmotion(int index, String emotion) {
+    if (selectedemotions.length <= index) {
+      selectedemotions.addAll(
+          List.filled(index - selectedemotions.length + 1, ''));
     }
-  }
-
-  void addThirdEmotion(String emotion) {
-    if (selectedemotions.length > 2) {
-      selectedemotions[2] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          2, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
-    }
+    selectedemotions[index] = emotion;
   }
 
   void _loadImages() async {
@@ -285,7 +271,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                             _buildEmotionButton(context, strongmodel.guclu, scwidht * 0.350,
                                 scwidht * 0.835, 0, scwidht * 0.06, () {
                                   selectedemotions.clear();
-                                  addFirstEmotion(strongmodel.guclu);
+                                  setEmotion(0, strongmodel.guclu);
                                   setState(() {
                                     strongmodel.toggleIsVisible1();
                                     if (strongmodel.isVisible2 == true) {
@@ -301,7 +287,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.64,
                                 10.58,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(strongmodel.gururduymus);
+                              setEmotion(1, strongmodel.gururduymus);
                               setState(() {
                                 strongmodel.toggleIsVisible2();
                               });
@@ -313,7 +299,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.65,
                                 10.70,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(strongmodel.gucsahibi);
+                              setEmotion(1, strongmodel.gucsahibi);
                               setState(() {
                                 strongmodel.toggleIsVisible2();
                               });
@@ -325,7 +311,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.67,
                                 10.85,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(strongmodel.saygin);
+                              setEmotion(1, strongmodel.saygin);
                               setState(() {
                                 strongmodel.toggleIsVisible2();
                               });
@@ -337,7 +323,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.665,
                                 11.08,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(strongmodel.degerli);
+                              setEmotion(1, strongmodel.degerli);
                               setState(() {
                                 strongmodel.toggleIsVisible2();
                               });
@@ -349,7 +335,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.645,
                                 11.20,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(strongmodel.saygideger);
+                              setEmotion(1, strongmodel.saygideger);
                               setState(() {
                                 strongmodel.toggleIsVisible2();
                               });
@@ -361,7 +347,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.675,
                                 11.4,
                                 scwidht * 0.038, () {
-                              addSecondEmotion(strongmodel.korkusuz);
+                              setEmotion(1, strongmodel.korkusuz);
                               setState(() {
                                 strongmodel.toggleIsVisible2();
                               });
@@ -369,7 +355,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                             //3. PARÇA DUYGULARI
                             _buildEmotionButton(context, strongmodel.onemli, scwidht * 0.10,
                                 scwidht * 0.25, 10.7, scwidht * 0.038, () {
-                                  addThirdEmotion(strongmodel.onemli);
+                                  setEmotion(2, strongmodel.onemli);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
@@ -377,7 +363,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 }, strongmodel.isVisible2),
                             _buildEmotionButton(context, strongmodel.azimli, scwidht * 0.11,
                                 scwidht * 0.36, 10.60, scwidht * 0.040, () {
-                                  addThirdEmotion(strongmodel.azimli);
+                                  setEmotion(2, strongmodel.azimli);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
@@ -390,7 +376,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.22,
                                 10.85,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(strongmodel.guclenmisgibi);
+                              setEmotion(2, strongmodel.guclenmisgibi);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -403,7 +389,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.29,
                                 11.05,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(strongmodel.basarili);
+                              setEmotion(2, strongmodel.basarili);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -411,7 +397,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                             }, strongmodel.isVisible2),
                             _buildEmotionButton(context, strongmodel.zeki, scwidht * 0.56,
                                 scwidht * 0.33, 11.3, scwidht * 0.040, () {
-                                  addThirdEmotion(strongmodel.zeki);
+                                  setEmotion(2, strongmodel.zeki);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
@@ -424,7 +410,7 @@ class _StrongState extends State<Strong> with WidgetsBindingObserver {
                                 scwidht * 0.26,
                                 11.40,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(strongmodel.kendindenemin);
+                              setEmotion(2, strongmodel.kendindenemin);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
