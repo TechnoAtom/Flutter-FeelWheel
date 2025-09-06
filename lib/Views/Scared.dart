@@ -61,26 +61,12 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
   }
 
 
-  void addFirstEmotion(String emotion) {
-    selectedemotions.insert(0, emotion);
-  }
-
-  void addSecondEmotion(String emotion) {
-    if (selectedemotions.length > 1) {
-      selectedemotions[1] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          1, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
+  void setEmotion(int index, String emotion) {
+    if (selectedemotions.length <= index) {
+      selectedemotions.addAll(
+          List.filled(index - selectedemotions.length + 1, ''));
     }
-  }
-
-  void addThirdEmotion(String emotion) {
-    if (selectedemotions.length > 2) {
-      selectedemotions[2] = emotion; // 1. index'teki öğeyi değiştir
-    } else {
-      selectedemotions.insert(
-          2, emotion); // Eğer 1. index'te öğe yoksa, yeni öğeyi ekle
-    }
+    selectedemotions[index] = emotion;
   }
 
   void _loadImages() async {
@@ -280,7 +266,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             _buildEmotionButton(context, scaredmodel.korkmus, scwidht * 0.345,
                                 scwidht * 0.835, 0, scwidht * 0.045, () {
                                   selectedemotions.clear();
-                                  addFirstEmotion(scaredmodel.korkmus);
+                                  setEmotion(0, scaredmodel.korkmus);
                                   setState(() {
                                     scaredmodel.toggleIsVisible1();
                                     if (scaredmodel.isVisible2 == true) {
@@ -291,42 +277,42 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             //2.PARÇA DUYGULARI
                             _buildEmotionButton(context, scaredmodel.guvensiz, scwidht * 0.185,
                                 scwidht * 0.68, 10.58, scwidht * 0.038, () {
-                                  addSecondEmotion(scaredmodel.guvensiz);
+                                  setEmotion(1, scaredmodel.guvensiz);
                                   setState(() {
                                     scaredmodel.toggleIsVisible2();
                                   });
                                 }, scaredmodel.isVisible1),
                             _buildEmotionButton(context, scaredmodel.gergin, scwidht * 0.278,
                                 scwidht * 0.68, 10.70, scwidht * 0.038, () {
-                                  addSecondEmotion(scaredmodel.gergin);
+                                  setEmotion(1, scaredmodel.gergin);
                                   setState(() {
                                     scaredmodel.toggleIsVisible2();
                                   });
                                 }, scaredmodel.isVisible1),
                             _buildEmotionButton(context, scaredmodel.panikicinde, scwidht * 0.297,
                                 scwidht * 0.62, 10.86, scwidht * 0.038, () {
-                                  addSecondEmotion(scaredmodel.panikicinde);
+                                  setEmotion(1, scaredmodel.panikicinde);
                                   setState(() {
                                     scaredmodel.toggleIsVisible2();
                                   });
                                 }, scaredmodel.isVisible1),
                             _buildEmotionButton(context, scaredmodel.endiseli, scwidht * 0.415,
                                 scwidht * 0.655, 11.05, scwidht * 0.038, () {
-                                  addSecondEmotion(scaredmodel.endiseli);
+                                  setEmotion(1, scaredmodel.endiseli);
                                   setState(() {
                                     scaredmodel.toggleIsVisible2();
                                   });
                                 }, scaredmodel.isVisible1),
                             _buildEmotionButton(context, scaredmodel.sokolmus, scwidht * 0.46,
                                 scwidht * 0.635, 11.20, scwidht * 0.038, () {
-                                  addSecondEmotion(scaredmodel.sokolmus);
+                                  setEmotion(1, scaredmodel.sokolmus);
                                   setState(() {
                                     scaredmodel.toggleIsVisible2();
                                   });
                                 }, scaredmodel.isVisible1),
                             _buildEmotionButton(context, scaredmodel.stresli, scwidht * 0.562,
                                 scwidht * 0.69, 11.39, scwidht * 0.038, () {
-                                  addSecondEmotion(scaredmodel.stresli);
+                                  setEmotion(1, scaredmodel.stresli);
                                   setState(() {
                                     scaredmodel.toggleIsVisible2();
                                   });
@@ -334,7 +320,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             //3. PARÇA DUYGULARI
                             _buildEmotionButton(context, scaredmodel.kaygicinde, scwidht * 0,
                                 scwidht * 0.29, 10.56, scwidht * 0.038, () {
-                                  addThirdEmotion(scaredmodel.kaygicinde);
+                                  setEmotion(2, scaredmodel.kaygicinde);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
@@ -344,7 +330,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
 
                             _buildEmotionButton(context, scaredmodel.supheicinde, scwidht * 0.10,
                                 scwidht * 0.225, 10.65, scwidht * 0.040, () {
-                                  addThirdEmotion(scaredmodel.supheicinde);
+                                  setEmotion(2, scaredmodel.supheicinde);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {
@@ -353,7 +339,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                                 }, scaredmodel.isVisible2),
                             _buildEmotionButton(context, scaredmodel.ezilmis, scwidht * 0.30,
                                 scwidht * 0.25, 10.85, scwidht * 0.040, () {
-                                  addThirdEmotion(scaredmodel.ezilmis);
+                                  setEmotion(2, scaredmodel.ezilmis);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
@@ -367,7 +353,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                                 scwidht * 0.17,
                                 11.04,
                                 scwidht * 0.040, () {
-                              addThirdEmotion(scaredmodel.heyecandangerilmis);
+                              setEmotion(2, scaredmodel.heyecandangerilmis);
                               Requests().sendSelectedEmotions(
                                   widget.id, selectedemotions);
                               setState(() {});
@@ -376,7 +362,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                             },  scaredmodel.isVisible2),
                             _buildEmotionButton(context, scaredmodel.paranoya, scwidht * 0.565,
                                 scwidht * 0.25, 11.20, scwidht * 0.040, () {
-                                  addThirdEmotion(scaredmodel.paranoya);
+                                  setEmotion(2, scaredmodel.paranoya);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   setState(() {});
@@ -385,7 +371,7 @@ class _ScaredState extends State<Scared> with WidgetsBindingObserver {
                                 },  scaredmodel.isVisible2),
                             _buildEmotionButton(context, scaredmodel.kafasikarisik, scwidht * 0.641,
                                 scwidht * 0.25, 11.40, scwidht * 0.040, () {
-                                  addThirdEmotion(scaredmodel.kafasikarisik);
+                                  setEmotion(2, scaredmodel.kafasikarisik);
                                   Requests().sendSelectedEmotions(
                                       widget.id, selectedemotions);
                                   print(selectedemotions.toString());

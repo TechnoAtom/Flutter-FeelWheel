@@ -60,34 +60,12 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
     }
   }
 
-  void addFirstEmotion(String emotion) {
-    if (selectedemotions.isEmpty) {
-      selectedemotions.add(emotion);
-    } else {
-      selectedemotions[0] = emotion;
+  void setEmotion(int index, String emotion) {
+    if (selectedemotions.length <= index) {
+      selectedemotions.addAll(
+          List.filled(index - selectedemotions.length + 1, ''));
     }
-  }
-
-  void addSecondEmotion(String emotion) {
-    if (selectedemotions.length > 1) {
-      selectedemotions[1] = emotion;
-    } else {
-      selectedemotions.length == 0
-          ? selectedemotions.addAll([ "", emotion ])
-          : selectedemotions.add(emotion);
-    }
-  }
-
-  void addThirdEmotion(String emotion) {
-    if (selectedemotions.length > 2) {
-      selectedemotions[2] = emotion;
-    } else {
-      // eksik indeksleri doldur
-      while (selectedemotions.length < 2) {
-        selectedemotions.add("");
-      }
-      selectedemotions.add(emotion);
-    }
+    selectedemotions[index] = emotion;
   }
 
   void setLoading() {
@@ -239,7 +217,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             scwidht * 0.06,
                                 () {
                               selectedemotions.clear();
-                              addFirstEmotion(angryModel.kizgin);
+                              setEmotion(0, angryModel.kizgin);
                               setState(() {
                                 angryModel.toggleIsVisible1();
                                 if (angryModel.isVisible2) {
@@ -259,7 +237,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             10.58,
                             scwidht * 0.038,
                                 () {
-                              addSecondEmotion(angryModel.ofkeli);
+                              setEmotion(1, angryModel.ofkeli);
                               setState(() => angryModel.toggleIsVisible2());
                             },
                             angryModel.isVisible1,
@@ -272,7 +250,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             10.75,
                             scwidht * 0.038,
                                 () {
-                              addSecondEmotion(angryModel.rahatsizedilmis);
+                              setEmotion(1, angryModel.rahatsizedilmis);
                               setState(() => angryModel.toggleIsVisible2());
                             },
                             angryModel.isVisible1,
@@ -285,7 +263,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             10.88,
                             scwidht * 0.038,
                                 () {
-                              addSecondEmotion(angryModel.caniacimis);
+                              setEmotion(1, angryModel.caniacimis);
                               setState(() => angryModel.toggleIsVisible2());
                             },
                             angryModel.isVisible1,
@@ -298,7 +276,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             11.08,
                             scwidht * 0.038,
                                 () {
-                              addSecondEmotion(angryModel.nefretdolu);
+                              setEmotion(1, angryModel.nefretdolu);
                               setState(() => angryModel.toggleIsVisible2());
                             },
                             angryModel.isVisible1,
@@ -311,7 +289,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             11.20,
                             scwidht * 0.038,
                                 () {
-                              addSecondEmotion(angryModel.huysuz);
+                              setEmotion(1, angryModel.huysuz);
                               setState(() => angryModel.toggleIsVisible2());
                             },
                             angryModel.isVisible1,
@@ -324,7 +302,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             11.4,
                             scwidht * 0.038,
                                 () {
-                              addSecondEmotion(angryModel.kiskanc);
+                              setEmotion(1, angryModel.kiskanc);
                               setState(() => angryModel.toggleIsVisible2());
                             },
                             angryModel.isVisible1,
@@ -339,7 +317,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             10.56,
                             scwidht * 0.038,
                                 () async {
-                              addThirdEmotion(angryModel.agresif);
+                              setEmotion(2, angryModel.agresif);
                               Requests().sendSelectedEmotions(widget.id, selectedemotions);
                               setState(() {});
                               await _ensureDescriptionLoaded();
@@ -356,7 +334,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             10.70,
                             scwidht * 0.040,
                                 () async {
-                              addThirdEmotion(angryModel.agirlikcokmus);
+                              setEmotion(2, angryModel.agirlikcokmus);
                               Requests().sendSelectedEmotions(widget.id, selectedemotions);
                               setState(() {});
                               await _ensureDescriptionLoaded();
@@ -373,7 +351,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             10.82,
                             scwidht * 0.040,
                                 () async {
-                              addThirdEmotion(angryModel.igrenmis);
+                              setEmotion(2, angryModel.igrenmis);
                               Requests().sendSelectedEmotions(widget.id, selectedemotions);
                               setState(() {});
                               await _ensureDescriptionLoaded();
@@ -390,7 +368,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             11.05,
                             scwidht * 0.040,
                                 () async {
-                              addThirdEmotion(angryModel.husranaugramis);
+                              setEmotion(2, angryModel.husranaugramis);
                               Requests().sendSelectedEmotions(widget.id, selectedemotions);
                               setState(() {});
                               await _ensureDescriptionLoaded();
@@ -407,7 +385,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             11.2,
                             scwidht * 0.040,
                                 () async {
-                              addThirdEmotion(angryModel.dusmanca);
+                              setEmotion(2, angryModel.dusmanca);
                               Requests().sendSelectedEmotions(widget.id, selectedemotions);
                               setState(() {});
                               await _ensureDescriptionLoaded();
@@ -424,7 +402,7 @@ class _ScaredState extends State<Angry> with WidgetsBindingObserver {
                             11.40,
                             scwidht * 0.040,
                                 () async {
-                              addThirdEmotion(angryModel.rahatsizlikduymus);
+                              setEmotion(2, angryModel.rahatsizlikduymus);
                               Requests().sendSelectedEmotions(widget.id, selectedemotions);
                               setState(() {});
                               await _ensureDescriptionLoaded();
